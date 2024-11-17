@@ -7,6 +7,8 @@
 
 The goal is to skip using babel for in dev mode to get faster build iteration, while remaining ISO with the zero runtime in production.
 
+⚠️ This project is a work in progress and might not yield the same css as the official linaria plugin
+
 # Usage
 
 ```ts
