@@ -1,6 +1,6 @@
 import linaria from "@wyw-in-js/vite";
 import type { UserConfig } from "vite";
-import { runtimeLinaria } from "../src/plugin";
+import { runtimeLinaria } from "..";
 
 export default {
   plugins: [
