@@ -9,9 +9,11 @@ The goal is to skip using babel for in dev mode to get faster build iteration, w
 
 ⚠️ This project is a work in progress and might not yield the same css as the official linaria plugin
 
-[🧑‍🔬 demo page, with linaria-runtime plugin](https://platane.github.io/runtime-linaria/linaria-runtime/index.html)
+🧑‍🔬 demo page:
 
-[🧑‍🔬 demo page, with official linaria plugin](https://platane.github.io/runtime-linaria/linaria/index.html)
+- [with linaria-runtime plugin](https://platane.github.io/runtime-linaria/linaria-runtime/index.html)
+
+- [with official linaria plugin](https://platane.github.io/runtime-linaria/linaria/index.html)
 
 # Usage
 
