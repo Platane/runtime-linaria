@@ -7,6 +7,27 @@
 
 The goal is to skip using babel for in dev mode to get faster build iteration, while remaining ISO with the zero runtime in production.
 
+# Usage
+
+```ts
+// vite.config.ts
+import linaria from "@wyw-in-js/vite";
+
+export default defineConfig(({ mode, command }) => ({
+  plugins: [
+    command === "build"
+      ? //
+        // use the classic linaria vite plugin in build for zero runtime build
+        linaria({ include: ["**/*.tsx"] })
+      : //
+        // use the runtime linaria in dev, for faster rebuild
+        runtimeLinaria({ include: ["**/*.tsx"] }),
+  ],
+}));
+```
+
+[example](demo/vite.config.ts)
+
 # Discrepancies
 
 - fix the hacky "global" keyword handling
