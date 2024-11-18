@@ -46,6 +46,10 @@ This module is not (yet) published on npm, we can add it as:
         "vite-plugin-runtime-linaria": "github:platane/vite-plugin-runtime-linaria"
 ```
 
+# Implementation
+
+Instead of doing complex transform on the file at build time to extract the css. This plugin make linaria resolve to a module that parse the css at runtime, which is similar to what styled-component / emotion does.
+
 # Discrepancies
 
 - fix the hacky "global" keyword handling
