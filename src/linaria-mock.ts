@@ -99,14 +99,14 @@ const generateVariableName = () => "--v-" + getRandomString();
 /**
  * a set of stylis middlewares which aim to replace the keyframes names in a ruleset with uniquely generated one
  */
-const createStylisKeyframeRenameMiddleware = () => {
+const createStylisKeyframeRenameMiddleware = (prefix: string) => {
   const nameMap = new Map<string, string>();
 
   // first pass: get all the keyframes name in a map, generate a unique name for each
   const collect = (element: StylisElement) => {
     if (element.type === "@keyframes") {
       const name = element.props[0];
-      nameMap.set(name, name + "-" + getRandomString());
+      nameMap.set(name, "_" + prefix + "-" + name.trim());
     }
   };
 
@@ -149,7 +149,8 @@ const attachStyleElement = (classNames: string[], cssBody: string) => {
   // generate the tree
   const compiled = compile(css);
 
-  const { collect, replace } = createStylisKeyframeRenameMiddleware();
+  const prefix = getStringHash(classNames.join());
+  const { collect, replace } = createStylisKeyframeRenameMiddleware(prefix);
   serialize(compiled, collect);
 
   css = serialize(compiled, middleware([replace, stringify]));
@@ -228,6 +229,15 @@ function enhanceComponent(componentOrString: React.ComponentType | string) {
 }
 
 const getRandomString = () => Math.random().toString(36).slice(2);
+const getStringHash = (string: string) =>
+  string
+    .split("")
+    .reduce(
+      (hash, char) => char.charCodeAt(0) + (hash << 6) + (hash << 16) - hash,
+      0,
+    )
+    .toString(36)
+    .replaceAll(/\W/g, "");
 
 /**
  * mock of linaria/react  styled
