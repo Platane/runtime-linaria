@@ -28,7 +28,7 @@ export const cssTemplateString = (
 ) => {
   const fns: ((props: any) => string)[] = [];
 
-  const templatePrefix = getRandomString();
+  const variableFragmentPrefix = "__variable_" + getRandomString() + "_";
 
   let cssBody = "";
   for (let i = 0; i < fragments.length; i++) {
@@ -36,7 +36,7 @@ export const cssTemplateString = (
     if (i < variables.length) {
       const v = variables[i];
       if (typeof v === "function") {
-        cssBody += "__variable" + templatePrefix + fns.length;
+        cssBody += variableFragmentPrefix + fns.length;
         fns.push(v);
       } else {
         cssBody += v.toString();
@@ -50,7 +50,7 @@ export const cssTemplateString = (
   }[] = [];
 
   let i;
-  while ((i = cssBody.indexOf("__variable" + templatePrefix)) !== -1) {
+  while ((i = cssBody.indexOf(variableFragmentPrefix)) !== -1) {
     const startIndex = cssBody.substring(0, i).lastIndexOf(":") + 1;
     const endIndex = cssBody.substring(i).search(/([;}]|$)/) + i;
 
@@ -65,8 +65,7 @@ export const cssTemplateString = (
       variableName,
       getValue: (props) =>
         fns.reduce(
-          (s, fn, i) =>
-            s.replace("__variable" + templatePrefix + i, fn(props)).trim(),
+          (s, fn, i) => s.replace(variableFragmentPrefix + i, fn(props)).trim(),
           template,
         ),
     });
