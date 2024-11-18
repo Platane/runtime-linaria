@@ -17,7 +17,7 @@ export const runtimeLinaria = (
       if (!url || url.includes("node_modules") || !filter(url)) return;
 
       if (id === "@linaria/core" || id === "@linaria/react") {
-        return __dirname + "/linaria-mock.ts";
+        return __dirname + "/../src/linaria-mock.ts";
       }
     },
   };
