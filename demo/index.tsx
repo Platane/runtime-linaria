@@ -9,6 +9,7 @@ import { Example as Example_componentVariable } from "./examples/componentVariab
 import { Example as Example_global } from "./examples/global";
 import { Example as Example_forwardRef } from "./examples/forwardRef";
 import { Example as Example_globalPriority } from "./examples/globalPriority";
+import { Example as Example_componentInTemplate } from "./examples/componentInTemplate";
 
 export const App = () => (
   <>
@@ -50,6 +51,11 @@ export const App = () => (
     <section>
       <h1>Global priority</h1>
       <Example_globalPriority />
+    </section>
+
+    <section>
+      <h1>Component in template</h1>
+      <Example_componentInTemplate />
     </section>
   </>
 );
