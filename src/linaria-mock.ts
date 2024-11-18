@@ -21,6 +21,14 @@ import {
  * if the template contains function, it replace the result with a generated css variable, which can be set with getVariables
  *
  * @example cssTemplateString`  some-css: ${ props => props.color }`;
+ *
+ * notice that the variable does not exactly match the template string function.
+ * instead it wrap the whole css value
+ *
+ * @example cssTemplateString`  border: solid ${ props => props.color } ${ props => props.size }px`;
+ *       // {
+ *       //    cssBody: "border: var(--vxxx)";
+ *       // }
  */
 export const cssTemplateString = (
   fragments: TemplateStringsArray,
@@ -51,15 +59,15 @@ export const cssTemplateString = (
 
   let i;
   while ((i = cssBody.indexOf(variableFragmentPrefix)) !== -1) {
-    const startIndex = cssBody.substring(0, i).lastIndexOf(":") + 1;
-    const endIndex = cssBody.substring(i).search(/([;}]|$)/) + i;
+    const cssValueStartIndex = cssBody.substring(0, i).lastIndexOf(":") + 1;
+    const cssValueEndIndex = cssBody.substring(i).search(/([;}]|$)/) + i;
 
-    const template = cssBody.substring(startIndex, endIndex);
+    const template = cssBody.substring(cssValueStartIndex, cssValueEndIndex);
     const variableName = generateVariableName();
     cssBody =
-      cssBody.substring(0, startIndex) +
+      cssBody.substring(0, cssValueStartIndex) +
       `var(${variableName})` +
-      cssBody.substring(endIndex);
+      cssBody.substring(cssValueEndIndex);
 
     cssVariables.push({
       variableName,
@@ -71,6 +79,9 @@ export const cssTemplateString = (
     });
   }
 
+  /**
+   * given a set of props, compute the css variables
+   */
   const getVariables = (props = {}) =>
     Object.fromEntries(
       cssVariables.map(({ variableName, getValue }) => [
@@ -83,7 +94,7 @@ export const cssTemplateString = (
 };
 
 const generateClassName = () => "class-" + getRandomString();
-const generateVariableName = () => "--v" + getRandomString();
+const generateVariableName = () => "--v-" + getRandomString();
 
 /**
  * a set of stylis middlewares which aim to replace the keyframes names in a ruleset with uniquely generated one
