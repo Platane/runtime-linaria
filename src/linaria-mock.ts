@@ -109,23 +109,9 @@ export const cssTemplateString = (
       ]),
     );
 
-  return {
-    cssBody,
-    getVariables,
-    valueMappersHash: cssVariables.map((v) => v.valueMapperHash).join(""),
-  };
-};
+  const valueMappersHash = cssVariables.map((v) => v.valueMapperHash).join("");
 
-const valueMappersHashCount = new Map<string, number>();
-const getClassName = (cssBody: string, valueMappersHash: string) => {
-  const hash = getStringHash(cssBody + valueMappersHash);
-
-  if (!valueMappersHash) return "c" + hash;
-
-  let i = (valueMappersHashCount.get(valueMappersHash) ?? 0) + 1;
-  valueMappersHashCount.set(valueMappersHash, i);
-
-  return "c" + hash + i;
+  return { cssBody, valueMappersHash, getVariables };
 };
 
 /**
@@ -207,7 +193,7 @@ function enhanceComponent(componentOrString: React.ComponentType | string) {
       ...args,
     );
 
-    const className = getClassName(cssBody, valueMappersHash);
+    const className = getUniqueClassName(cssBody, valueMappersHash);
     const classNames = [
       ...((componentOrString as any).__runtime_linaria_classNames ?? []),
       className,
@@ -267,6 +253,18 @@ function enhanceComponent(componentOrString: React.ComponentType | string) {
 const getRandomString = () => Math.random().toString(36).slice(2);
 
 /**
+ * return a unique className
+ * hash the content of the css, and add an increasing index
+ */
+const getUniqueClassName = (cssBody: string, valueMappersHash: string) => {
+  const hash = getStringHash(cssBody + valueMappersHash);
+  const id = classNameHashCount.get(hash) ?? 0;
+  classNameHashCount.set(hash, 1 + id);
+  return "c" + hash + id;
+};
+const classNameHashCount = new Map<string, number>();
+
+/**
  * return the string hash
  * idk where I got this hash function but it seems to work
  */
@@ -302,7 +300,8 @@ export const css = (...args: Parameters<typeof cssTemplateString>) => {
     Object.entries(o.getVariables())
       .map(([name, value]) => `${name}:${value}`)
       .join(";");
-  const className = getClassName(cssBody, "");
+
+  const className = getUniqueClassName(cssBody, "");
 
   attachStyleElement([className], cssBody);
 

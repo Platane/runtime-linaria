@@ -11,6 +11,7 @@ import { Example as Example_forwardRef } from "./examples/forwardRef";
 import { Example as Example_globalPriority } from "./examples/globalPriority";
 import { Example as Example_componentInTemplate } from "./examples/componentInTemplate";
 import { Example as Example_componentClosure } from "./examples/componentClosure";
+import { Example as Example_classNamePriority } from "./examples/classNamePriority";
 
 export const App = () => (
   <>
@@ -62,6 +63,11 @@ export const App = () => (
     <section>
       <h1>Component closure</h1>
       <Example_componentClosure />
+    </section>
+
+    <section>
+      <h1>ClassName priority</h1>
+      <Example_classNamePriority />
     </section>
   </>
 );
