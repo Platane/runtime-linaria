@@ -11,9 +11,9 @@ The goal is to skip using babel for in dev mode to get faster build iteration, w
 
 🧑‍🔬 demo page:
 
-- [with linaria-runtime plugin](https://platane.github.io/runtime-linaria/linaria-runtime/index.html)
+- [with linaria-runtime plugin](https://platane.github.io/vite-plugin-runtime-linaria/linaria-runtime/index.html)
 
-- [with official linaria plugin](https://platane.github.io/runtime-linaria/linaria/index.html)
+- [with official linaria plugin](https://platane.github.io/vite-plugin-runtime-linaria/linaria/index.html)
 
 # Usage
 
@@ -35,6 +35,16 @@ export default defineConfig(({ mode, command }) => ({
 ```
 
 [example](demo/vite.config.ts)
+
+**package manager**
+
+This module is not (yet) published on npm, we can add it as:
+
+```js
+// package.json
+    "dependencies": {
+        "vite-plugin-runtime-linaria": "github:platane/vite-plugin-runtime-linaria"
+```
 
 # Discrepancies
 
