@@ -13,7 +13,15 @@ export const Example = () => (
 const orangeTextClassName = css`
   background-color: orange;
 
+  & * {
+    font-size: 18px;
+  }
+
   b {
     background-color: limegreen;
+  }
+
+  &:hover {
+    background-color: purple;
   }
 `;
