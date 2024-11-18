@@ -5,6 +5,10 @@ export const Example = () => (
   <>
     <RotatingSquare>Rotating</RotatingSquare>
     <GrowingSquare>Growing</GrowingSquare>
+    <MovingSquare>
+      Moving
+      <div>nested</div>
+    </MovingSquare>
   </>
 );
 
@@ -35,6 +39,34 @@ const GrowingSquare = styled(Square)`
     }
     100% {
       transform: scale(1.4);
+    }
+  }
+`;
+
+const MovingSquare = styled(Square)`
+  animation: anim infinite linear 2s alternate-reverse;
+  @keyframes anim {
+    0% {
+      transform: translate(0, 0);
+    }
+    100% {
+      transform: translate(100px, 0);
+    }
+  }
+
+  > div {
+    animation: anim infinite linear 2s alternate-reverse;
+
+    // interestingly, this keyframe will overwrite the one on the upper scope
+    // it seems like nesting does not isolate keyframe names
+    // ( with both official and runtime plugin )
+    @keyframes anim {
+      0% {
+        transform: translate(0, 0);
+      }
+      100% {
+        transform: translate(0, 60px);
+      }
     }
   }
 `;
