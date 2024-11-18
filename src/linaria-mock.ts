@@ -54,7 +54,7 @@ export const cssTemplateString = (
 
   const cssVariables: {
     variableName: string;
-    valueSlug: string;
+    valueMapperHash: string;
     getValue: (props: any) => any;
   }[] = [];
 
@@ -79,13 +79,15 @@ export const cssTemplateString = (
       cssBody.substring(cssValueEndIndex);
 
     const getValue = (props: any) =>
-      getFragmentValueFns.reduce(
-        (s, getFragmentValue, i) =>
-          s.replace(variableFragmentPrefix + i, getFragmentValue(props)),
-        template,
-      );
+      getFragmentValueFns
+        .reduce(
+          (s, getFragmentValue, i) =>
+            s.replace(variableFragmentPrefix + i, getFragmentValue(props)),
+          template,
+        )
+        .trim();
 
-    const valueSlug = getStringHash(
+    const valueMapperHash = getStringHash(
       getFragmentValueFns.reduce(
         (s, getFragmentValue, i) =>
           s.replace(variableFragmentPrefix + i, getFragmentValue.toString()),
@@ -93,7 +95,7 @@ export const cssTemplateString = (
       ),
     );
 
-    cssVariables.push({ variableName, valueSlug, getValue });
+    cssVariables.push({ variableName, valueMapperHash, getValue });
   }
 
   /**
@@ -110,20 +112,20 @@ export const cssTemplateString = (
   return {
     cssBody,
     getVariables,
-    valuesSlug: cssVariables.map((v) => v.valueSlug).join(""),
+    valueMappersHash: cssVariables.map((v) => v.valueMapperHash).join(""),
   };
 };
 
-const valuesSlugCount = new Map<string, number>();
-const getClassName = (cssBody: string, valuesSlug: string) => {
-  const slug = getStringHash(cssBody + valuesSlug);
+const valueMappersHashCount = new Map<string, number>();
+const getClassName = (cssBody: string, valueMappersHash: string) => {
+  const hash = getStringHash(cssBody + valueMappersHash);
 
-  if (!valuesSlug) return "c" + slug;
+  if (!valueMappersHash) return "c" + hash;
 
-  let i = (valuesSlugCount.get(valuesSlug) ?? 0) + 1;
-  valuesSlugCount.set(valuesSlug, i);
+  let i = (valueMappersHashCount.get(valueMappersHash) ?? 0) + 1;
+  valueMappersHashCount.set(valueMappersHash, i);
 
-  return "c" + slug + i;
+  return "c" + hash + i;
 };
 
 /**
@@ -201,10 +203,11 @@ const attachStyleElement = (classNames: string[], cssBody: string) => {
 
 function enhanceComponent(componentOrString: React.ComponentType | string) {
   return (...args: Parameters<typeof cssTemplateString>) => {
-    const { cssBody, getVariables, valuesSlug } = cssTemplateString(...args);
+    const { cssBody, getVariables, valueMappersHash } = cssTemplateString(
+      ...args,
+    );
 
-    debugger;
-    const className = getClassName(cssBody, valuesSlug);
+    const className = getClassName(cssBody, valueMappersHash);
     const classNames = [
       ...((componentOrString as any).__runtime_linaria_classNames ?? []),
       className,
