@@ -52,5 +52,5 @@ Instead of doing complex transform on the file at build time to extract the css.
 
 # Discrepancies
 
+- className naming convention is different from linaria, and not customizable
 - fix the hacky "global" keyword handling
-- use the same className naming convention as linaria

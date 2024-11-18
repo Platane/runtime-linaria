@@ -1,5 +1,4 @@
 import { createFilter, type FilterPattern, type PluginOption } from "vite";
-import type { PluginOptions } from "@wyw-in-js/transform";
 
 /**
  * allows linaria to work in runtime mode
@@ -26,4 +25,4 @@ export const runtimeLinaria = (
 type VitePluginOptions = {
   exclude?: FilterPattern;
   include?: FilterPattern;
-} & Pick<PluginOptions, "classNameSlug">;
+};
