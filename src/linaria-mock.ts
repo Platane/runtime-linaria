@@ -34,7 +34,7 @@ export const cssTemplateString = (
   fragments: TemplateStringsArray,
   ...variables: any[]
 ) => {
-  const fns: ((props: any) => string)[] = [];
+  const getFragmentValueFns: ((props: any) => string)[] = [];
 
   const variableFragmentPrefix = "__variable_" + getRandomString() + "_";
 
@@ -44,8 +44,8 @@ export const cssTemplateString = (
     if (i < variables.length) {
       const v = variables[i];
       if (typeof v === "function") {
-        cssBody += variableFragmentPrefix + fns.length;
-        fns.push(v);
+        cssBody += variableFragmentPrefix + getFragmentValueFns.length;
+        getFragmentValueFns.push(v);
       } else {
         cssBody += v.toString();
       }
@@ -57,26 +57,34 @@ export const cssTemplateString = (
     getValue: (props: any) => any;
   }[] = [];
 
+  let k = 0;
   let i;
   while ((i = cssBody.indexOf(variableFragmentPrefix)) !== -1) {
     const cssValueStartIndex = cssBody.substring(0, i).lastIndexOf(":") + 1;
     const cssValueEndIndex = cssBody.substring(i).search(/([;}]|$)/) + i;
 
+    const cssPropertyNameEndIndex = cssValueStartIndex - 1;
+    const cssPropertyName =
+      cssBody
+        .substring(0, cssPropertyNameEndIndex)
+        .match(/([\w-]+)\s*$/)?.[1] ?? "v";
+    const variableName = "--" + cssPropertyName + "-" + k++;
+
     const template = cssBody.substring(cssValueStartIndex, cssValueEndIndex);
-    const variableName = generateVariableName();
+
     cssBody =
       cssBody.substring(0, cssValueStartIndex) +
       `var(${variableName})` +
       cssBody.substring(cssValueEndIndex);
 
-    cssVariables.push({
-      variableName,
-      getValue: (props) =>
-        fns.reduce(
-          (s, fn, i) => s.replace(variableFragmentPrefix + i, fn(props)).trim(),
-          template,
-        ),
-    });
+    const getValue = (props: any) =>
+      getFragmentValueFns.reduce(
+        (s, getFragmentValue, i) =>
+          s.replace(variableFragmentPrefix + i, getFragmentValue(props)),
+        template,
+      );
+
+    cssVariables.push({ variableName, getValue });
   }
 
   /**
