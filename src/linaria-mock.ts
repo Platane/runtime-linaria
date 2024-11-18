@@ -222,7 +222,7 @@ function enhanceComponent(componentOrString: React.ComponentType | string) {
 
     return Object.assign(enhancedComponent, {
       __runtime_linaria_classNames: classNames,
-      toString: () => classNames.map((c) => "." + c).join(" "),
+      toString: () => classNames.map((c) => "." + c).join(" "), // overwrite the toString method so a component can be used in template string
     });
   };
 }
@@ -231,6 +231,7 @@ const getRandomString = () => Math.random().toString(36).slice(2);
 
 /**
  * mock of linaria/react  styled
+ * allows the syntax styled.div to translate to enhanceComponent('div')
  */
 export const styled = new Proxy(enhanceComponent, {
   get(o, prop) {
