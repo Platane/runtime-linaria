@@ -10,6 +10,7 @@ import { Example as Example_global } from "./examples/global";
 import { Example as Example_forwardRef } from "./examples/forwardRef";
 import { Example as Example_globalPriority } from "./examples/globalPriority";
 import { Example as Example_componentInTemplate } from "./examples/componentInTemplate";
+import { Example as Example_componentClosure } from "./examples/componentClosure";
 
 export const App = () => (
   <>
@@ -56,6 +57,11 @@ export const App = () => (
     <section>
       <h1>Component in template</h1>
       <Example_componentInTemplate />
+    </section>
+
+    <section>
+      <h1>Component closure</h1>
+      <Example_componentClosure />
     </section>
   </>
 );

@@ -3,6 +3,8 @@ import { styled } from "@linaria/react";
 
 export const Example = () => (
   <>
+    <p>Support of the as props to change the final html element</p>
+
     <Link href="#">I am not a link</Link>
 
     <Link as="a" href="#">

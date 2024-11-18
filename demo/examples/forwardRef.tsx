@@ -15,7 +15,11 @@ export const Example = () => {
     return () => clearInterval(i);
   });
 
-  return <Square ref={ref}>blinking square</Square>;
+  return (
+    <>
+      <Square ref={ref}>blinking square</Square>
+    </>
+  );
 };
 
 const Square = styled.div`

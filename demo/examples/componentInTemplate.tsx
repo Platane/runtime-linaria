@@ -3,6 +3,10 @@ import { styled } from "@linaria/react";
 
 export const Example = () => (
   <>
+    <p>
+      A component can be used in a css template string, the component className
+      is then used
+    </p>
     <Square />
     <Container>
       <Square />

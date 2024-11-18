@@ -54,6 +54,7 @@ export const cssTemplateString = (
 
   const cssVariables: {
     variableName: string;
+    valueSlug: string;
     getValue: (props: any) => any;
   }[] = [];
 
@@ -84,7 +85,15 @@ export const cssTemplateString = (
         template,
       );
 
-    cssVariables.push({ variableName, getValue });
+    const valueSlug = getStringHash(
+      getFragmentValueFns.reduce(
+        (s, getFragmentValue, i) =>
+          s.replace(variableFragmentPrefix + i, getFragmentValue.toString()),
+        template,
+      ),
+    );
+
+    cssVariables.push({ variableName, valueSlug, getValue });
   }
 
   /**
@@ -98,11 +107,24 @@ export const cssTemplateString = (
       ]),
     );
 
-  return { cssBody, getVariables };
+  return {
+    cssBody,
+    getVariables,
+    valuesSlug: cssVariables.map((v) => v.valueSlug).join(""),
+  };
 };
 
-const generateClassName = () => "class-" + getRandomString();
-const generateVariableName = () => "--v-" + getRandomString();
+const valuesSlugCount = new Map<string, number>();
+const getClassName = (cssBody: string, valuesSlug: string) => {
+  const slug = getStringHash(cssBody + valuesSlug);
+
+  if (!valuesSlug) return "c" + slug;
+
+  let i = (valuesSlugCount.get(valuesSlug) ?? 0) + 1;
+  valuesSlugCount.set(valuesSlug, i);
+
+  return "c" + slug + i;
+};
 
 /**
  * a set of stylis middlewares which aim to replace the keyframes names in a ruleset with uniquely generated one
@@ -179,12 +201,15 @@ const attachStyleElement = (classNames: string[], cssBody: string) => {
 
 function enhanceComponent(componentOrString: React.ComponentType | string) {
   return (...args: Parameters<typeof cssTemplateString>) => {
-    const className = generateClassName();
+    const { cssBody, getVariables, valuesSlug } = cssTemplateString(...args);
+
+    debugger;
+    const className = getClassName(cssBody, valuesSlug);
     const classNames = [
       ...((componentOrString as any).__runtime_linaria_classNames ?? []),
       className,
     ];
-    const { cssBody, getVariables } = cssTemplateString(...args);
+
     attachStyleElement(classNames, cssBody);
 
     const enhancedComponent = React.forwardRef((props: any, ref) => {
@@ -237,6 +262,11 @@ function enhanceComponent(componentOrString: React.ComponentType | string) {
 }
 
 const getRandomString = () => Math.random().toString(36).slice(2);
+
+/**
+ * return the string hash
+ * idk where I got this hash function but it seems to work
+ */
 const getStringHash = (string: string) =>
   string
     .split("")
@@ -269,7 +299,7 @@ export const css = (...args: Parameters<typeof cssTemplateString>) => {
     Object.entries(o.getVariables())
       .map(([name, value]) => `${name}:${value}`)
       .join(";");
-  const className = generateClassName();
+  const className = getClassName(cssBody, "");
 
   attachStyleElement([className], cssBody);
 
