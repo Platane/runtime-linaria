@@ -6,10 +6,17 @@
   "repository": "github:platane/vite-plugin-runtime-linaria",
   "version": "0.0.1",
   "private": true,
-  "main": "./dist/plugin.js",
+  "main": "./dist/plugin.cjs",
+  "module": "./dist/plugin.mjs",
   "exports": {
-    "types": "./dist/plugin.d.ts",
-    "require": "./dist/plugin.js"
+    "import": {
+      "types": "./dist/plugin.d.ts",
+      "default": "./dist/plugin.mjs"
+    },
+    "require": {
+      "types": "./dist/plugin.d.ts",
+      "default": "./dist/plugin.cjs"
+    }
   },
   "dependencies": {
     "@emotion/is-prop-valid": "1.3.1",
@@ -34,7 +41,7 @@
     "react": "^18.3.1"
   },
   "scripts": {
-    "build": "rm -r dist ; tsc --declaration --outDir dist src/plugin.ts",
+    "build": "rm -r dist ; tsc --declaration --module commonjs --outDir dist src/plugin.ts ; mv dist/plugin.js dist/plugin.cjs ; tsc --module preserve --outDir dist src/plugin.ts ; mv dist/plugin.js dist/plugin.mjs",
     "build:demo": "LINARIA_RUNTIME=1 vite build demo --outDir dist/linaria-runtime --base=\"./\" && vite build demo --outDir dist/linaria --base=\"./\"",
     "dev": "LINARIA_RUNTIME=1 vite demo"
   }
